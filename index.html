@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PromptLab - Interactive Masterclass</title>
+    <title>PROMPTING / FIELD NOTES</title>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -12,7 +12,6 @@
             --text-color: #f3f4f6;
             --subtext: #9ca3af;
             --accent: #8b5cf6;
-            --accent-hover: #7c3aed;
             --border: #374151;
         }
         body {
@@ -21,33 +20,44 @@
             color: var(--text-color);
             margin: 0;
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
+            overflow: hidden;
         }
         .sidebar {
-            width: 280px;
+            width: 320px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             padding: 20px;
-            display: flex;
-            flex-direction: column;
+            overflow-y: auto;
         }
         .logo {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: bold;
             color: var(--accent);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            background: rgba(139, 92, 246, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .nav-section {
+            font-size: 13px;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-top: 15px;
+            margin-bottom: 6px;
         }
         .nav-item {
-            padding: 12px 15px;
-            border-radius: 8px;
+            padding: 6px 10px;
+            border-radius: 6px;
             cursor: pointer;
             color: var(--subtext);
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 3px;
+            font-size: 12px;
             transition: 0.2s;
         }
         .nav-item:hover, .nav-item.active {
-            background-color: rgba(139, 92, 246, 0.15);
+            background-color: rgba(139, 92, 246, 0.2);
             color: var(--text-color);
         }
         .main-content {
@@ -55,32 +65,24 @@
             padding: 40px;
             overflow-y: auto;
         }
-        .header-tag {
-            background: rgba(139, 92, 246, 0.2);
-            color: #c4b5fd;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 15px;
+        .chapter-tag {
+            font-size: 12px;
+            color: var(--subtext);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
         h1 {
-            font-size: 36px;
+            font-size: 28px;
             margin-top: 0;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        .card h3 {
-            color: #60a5fa;
-            margin-top: 0;
         }
         .code-grid {
             display: grid;
@@ -94,7 +96,8 @@
             border-radius: 8px;
             padding: 15px;
             font-family: monospace;
-            font-size: 13px;
+            font-size: 12px;
+            white-space: pre-wrap;
         }
         .code-box.bad { border-left: 4px solid #ef4444; }
         .code-box.good { border-left: 4px solid #10b981; }
@@ -103,96 +106,121 @@
 <body>
 
 <div class="sidebar">
-    <div class="logo">⚡ PromptLab</div>
-    <div class="nav-item active" onclick="switchTab(0)">01. Introduction</div>
-    <div class="nav-item" onclick="switchTab(1)">02. How LLMs Work</div>
-    <div class="nav-item" onclick="switchTab(2)">03. Chat & Feedback</div>
-    <div class="nav-item" onclick="switchTab(3)">04. LLM Applications</div>
-    <div class="nav-item" onclick="switchTab(4)">05. Context & RAG</div>
+    <div class="logo">PROMPTING / FIELD NOTES</div>
+    
+    <div class="nav-section">01. Introduction</div>
+    <div class="nav-item active" onclick="showContent(0)">Introduction to Prompt Engineering</div>
+    
+    <div class="nav-section">02. Understanding LLMs</div>
+    <div class="nav-item" onclick="showContent(1)">How LLMs Work</div>
+    <div class="nav-item" onclick="showContent(2)">Tokens & Sequences</div>
+    <div class="nav-item" onclick="showContent(3)">Context Window & Limitations</div>
+    
+    <div class="nav-section">03. Chat & Feedback</div>
+    <div class="nav-item" onclick="showContent(4)">Chat Models & Alignment (RLHF)</div>
+    
+    <div class="nav-section">04. LLM Applications</div>
+    <div class="nav-item" onclick="showContent(5)">Designing Applications</div>
+    
+    <div class="nav-section">05. Context & RAG</div>
+    <div class="nav-item" onclick="showContent(6)">Context, RAG & Workbook</div>
 </div>
 
 <div class="main-content">
-    <div id="content-area">
-        <!-- İçerikler JavaScript ile yüklenecek -->
-    </div>
+    <div id="content-display"></div>
 </div>
 
 <script>
-    const data = [
+    const contents = [
         {
-            tag: "MODULE 01",
+            tag: "Introduction Notes",
             title: "Introduction to Prompt Engineering",
             desc: "A language model produces a continuation of the information it receives. Prompt engineering is the practice of making that continuation useful, relevant, and reliable.",
-            qTitle: "The Central Question & Core Concept",
-            qDesc: "Give a model the opening words 'The most important discovery of the experiment was...' and many continuations are possible. Prompt engineering goes far beyond clever phrasing; in real applications it covers context retrieval, conversation state, output constraints, and validation.",
-            badPrompt: "Vague prompt:\nExplain transformers.",
-            goodPrompt: "Designed prompt:\nExplain the Transformer neural architecture to 1st-year Computer Science students.\n- Start with the core bottleneck.\n- Include a comparative table."
+            subtitle: "Core Concept & Structure",
+            subdesc: "Going beyond clever phrasing to master context retrieval, conversation state, output constraints, and validation.",
+            bad: "Vague prompt:\nExplain transformers.",
+            good: "Designed prompt:\nExplain the Transformer architecture to 1st-year CS students with a comparative table."
         },
         {
-            tag: "MODULE 02",
-            title: "How LLMs Work",
-            desc: "Large Language Models operate by predicting the next token based on statistical patterns learned from massive text corpora.",
-            qTitle: "Tokens and Attention Mechanism",
-            qDesc: "Models do not see words the way humans do; they break text down into tokens. The transformer's self-attention mechanism allows the model to weigh the significance of each word relative to all other words in the input sequence.",
-            badPrompt: "Vague prompt:\nHow do models work?",
-            goodPrompt: "Designed prompt:\nDescribe how self-attention works in transformers using a simple analogy for a beginner developer."
+            tag: "Understanding LLMs",
+            title: "How Language Models Work",
+            desc: "To use a language model well, understand what it actually processes: tokens, probability distributions, and context windows.",
+            subtitle: "The Generation Loop",
+            subdesc: "Input Text ➔ Tokenization ➔ Transformer Layers (Self-Attention) ➔ Probability Distribution ➔ Next Token Sampling.",
+            bad: "Vague prompt:\nWrite a story.",
+            good: "Designed prompt:\nWrite a 3-paragraph sci-fi story about Mars communications. Tone: suspenseful."
         },
         {
-            tag: "MODULE 03",
-            title: "Chat & Feedback (RLHF)",
-            desc: "Aligning language models to follow instructions safely and effectively using human feedback.",
-            qTitle: "Reinforcement Learning from Human Feedback",
-            qDesc: "Chat models are fine-tuned using human preferences. This ensures they refuse harmful requests, maintain polite tones, and follow multi-turn conversational structures accurately.",
-            badPrompt: "Vague prompt:\nBe a helpful assistant.",
-            goodPrompt: "Designed prompt:\nAct as a strict code reviewer. Evaluate the following JavaScript snippet for performance leaks and security flaws."
+            tag: "Tokens & Sequences",
+            title: "Tokens and Sequences",
+            desc: "Models do not see words the way humans do; they break text down into tokens and predict the next token autoregressively.",
+            subtitle: "Tokenization Impact",
+            subdesc: "Managing token counts prevents hitting context window limits and controls API execution latency and costs.",
+            bad: "Vague prompt:\nSummarize this text.",
+            good: "Designed prompt:\nSummarize the core arguments into exactly 5 bullet points under 150 tokens."
         },
         {
-            tag: "MODULE 04",
-            title: "LLM Applications",
-            desc: "Deploying language models into production systems requires robust API orchestration and prompt templates.",
-            qTitle: "System Prompts & Guardrails",
-            qDesc: "Real-world applications rely on fixed system instructions that define the AI's persona, boundaries, and expected JSON output formats for downstream software processing.",
-            badPrompt: "Vague prompt:\nExtract data from text.",
-            goodPrompt: "Designed prompt:\nExtract customer names and order IDs from the text below. Output strictly in JSON format with keys 'name' and 'order_id'."
+            tag: "Context Window",
+            title: "The Context Window Limit",
+            desc: "Every model has a strict memory window representing the maximum tokens it can hold during a single request.",
+            subtitle: "Managing Window Capacity",
+            subdesc: "When inputs exceed capacity, earlier parts of the context are truncated or forgotten by the network.",
+            bad: "Vague prompt:\nRemember everything.",
+            good: "Designed prompt:\nReference strictly the text block provided below to answer the inquiry."
         },
         {
-            tag: "MODULE 05",
-            title: "Context & RAG",
-            desc: "Overcoming model knowledge cutoffs and hallucinations by integrating external data sources.",
-            qTitle: "Retrieval-Augmented Generation",
-            qDesc: "RAG combines vector databases with LLMs. When a user asks a question, relevant documents are retrieved and injected directly into the prompt context as grounded reference material.",
-            badPrompt: "Vague prompt:\nAnswer based on company policy.",
-            goodPrompt: "Designed prompt:\nUsing ONLY the provided policy excerpt below, answer the user's refund inquiry. Do not assume outside facts."
+            tag: "Chat & Feedback",
+            title: "Chat Models, Human Feedback & Tools",
+            desc: "Modern LLMs are fine-tuned via RLHF (Reinforcement Learning from Human Feedback) to act as safe conversational assistants.",
+            subtitle: "Safety & Alignment",
+            subdesc: "Utilizing system prompts to enforce safe boundaries, structured JSON outputs, and multi-turn alignment.",
+            bad: "Vague prompt:\nBe a helpful assistant.",
+            good: "Designed prompt:\nAct as a strict code reviewer. Evaluate the JavaScript snippet for security flaws."
+        },
+        {
+            tag: "LLM Applications",
+            title: "Designing Applications with Language Models",
+            desc: "Moving from playground chats to robust software engineering requires strict system instructions and API orchestration.",
+            subtitle: "System Prompts & Guardrails",
+            subdesc: "Enforcing schemas ensures downstream software can parse model responses reliably without breaking.",
+            bad: "Vague prompt:\nGet data from text.",
+            good: "Designed prompt:\nExtract user names and IDs from text below. Output strictly in JSON format."
+        },
+        {
+            tag: "Context & RAG",
+            title: "Context, Retrieval-Augmented Generation & Lab",
+            desc: "Overcoming model knowledge cutoffs by injecting live reference data directly into prompts via vector search.",
+            subtitle: "Grounded Knowledge Retrieval",
+            subdesc: "RAG mitigates hallucinations by restricting answers strictly to retrieved source documents.",
+            bad: "Vague prompt:\nWhat is our refund policy?",
+            good: "Designed prompt:\nUsing ONLY the policy excerpt attached below, state eligibility rules."
         }
     ];
 
-    function switchTab(index) {
+    function showContent(index) {
         const items = document.querySelectorAll('.nav-item');
-        items.forEach((item, i) => {
-            if (i === index) item.classList.add('active');
-            else item.classList.remove('active');
-        });
+        items.forEach(el => el.classList.remove('active'));
+        event.target.classList.add('active');
 
-        const d = data[index];
-        document.getElementById('content-area').innerHTML = `
-            <div class="header-tag">${d.tag}</div>
-            <h1>${d.title}</h1>
+        const c = contents[index];
+        document.getElementById('content-display').innerHTML = `
+            <div class="chapter-tag">${c.tag}</div>
+            <h1>${c.title}</h1>
             <div class="card">
-                <p style="font-size: 16px; line-height: 1.6; color: var(--subtext);">${d.desc}</p>
+                <p style="font-size: 15px; line-height: 1.6; color: var(--subtext);">${c.desc}</p>
             </div>
             <div class="card">
-                <h3>${d.qTitle}</h3>
-                <p style="color: var(--subtext);">${d.qDesc}</p>
+                <h3 style="color: #60a5fa; margin-top:0;">${c.subtitle}</h3>
+                <p style="color: var(--subtext); line-height: 1.5; font-size: 14px;">${c.subdesc}</p>
                 <div class="code-grid">
-                    <div class="code-box bad">${d.badPrompt}</div>
-                    <div class="code-box good">${d.goodPrompt}</div>
+                    <div class="code-box bad">${c.bad}</div>
+                    <div class="code-box good">${c.good}</div>
                 </div>
             </div>
         `;
     }
 
-    // İlk açılışta ilk sekmeyi yükle
-    switchTab(0);
+    showContent(0);
 </script>
 
 </body>
