@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Engineering - Interactive Guide</title>
+    <title>Prompt Engineering Masterclass</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -12,6 +12,16 @@
             --accent-color: #38bdf8;
             --accent-hover: #0ea5e9;
             --border-color: #334155;
+            --subtext: #94a3b8;
+        }
+        [data-theme="light"] {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #0f172a;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
+            --border-color: #cbd5e1;
+            --subtext: #475569;
         }
         body {
             font-family: system-ui, -apple-system, sans-serif;
@@ -23,29 +33,47 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .top-bar button {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
         }
         .container {
-            max-width: 800px;
+            max-width: 850px;
             width: 100%;
             text-align: center;
+            margin-top: 40px;
         }
         h1 {
             color: var(--accent-color);
             margin-bottom: 10px;
         }
         p.subtitle {
-            color: #94a3b8;
-            margin-bottom: 40px;
+            color: var(--subtext);
+            margin-bottom: 30px;
         }
         .slider-container {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 30px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
             text-align: left;
             position: relative;
-            min-height: 200px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -55,7 +83,7 @@
         }
         .slide.active {
             display: block;
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.4s ease-in-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
@@ -70,9 +98,9 @@
             justify-content: space-between;
             margin-top: 30px;
         }
-        button {
+        .nav-btn {
             background-color: var(--accent-color);
-            color: #0f172a;
+            color: var(--bg-color);
             border: none;
             padding: 10px 20px;
             font-weight: bold;
@@ -80,7 +108,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        button:hover {
+        .nav-btn:hover {
             background-color: var(--accent-hover);
         }
         .dots {
@@ -102,37 +130,47 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+
+<div class="top-bar">
+    <button onclick="toggleTheme()">🌓 Tema Değiştir</button>
+    <button onclick="toggleLanguage()">🌐 TR / EN</button>
+</div>
 
 <div class="container">
-    <h1>Prompt Engineering & AI Masterclass</h1>
-    <p class="subtitle">Explore core concepts, LLM architectures, and interactive features below.</p>
+    <h1 id="main-title">Prompt Engineering & AI Masterclass</h1>
+    <p class="subtitle" id="main-subtitle">Comprehensive guide covering all course materials, LLMs, chat models, and applications.</p>
 
     <div class="slider-container">
         <!-- Slide 1 -->
         <div class="slide active">
-            <h2>01. Introduction to Prompting</h2>
-            <p>Prompt engineering is the process of structuring an instruction so that an AI model can interpret and understand it clearly, yielding accurate and relevant outputs.</p>
+            <h2 id="s1-title">01. Introduction to Prompting</h2>
+            <p id="s1-desc">Prompt engineering is the foundation of structuring precise instructions for AI models. It bridges human intent and machine understanding to generate accurate, context-aware responses.</p>
         </div>
         <!-- Slide 2 -->
         <div class="slide">
-            <h2>02. Understanding LLMs</h2>
-            <p>Large Language Models rely on deep learning and transformer architectures to process vast amounts of text data, predicting subsequent tokens based on contextual probabilities.</p>
+            <h2 id="s2-title">02. Understanding LLMs</h2>
+            <p id="s2-desc">Large Language Models use massive neural networks and transformer architectures. They process tokens and calculate probabilities to generate human-like text outputs.</p>
         </div>
         <!-- Slide 3 -->
         <div class="slide">
-            <h2>03. Chat Models & Alignment</h2>
-            <p>Modern chat models undergo Reinforcement Learning from Human Feedback (RLHF) to ensure safety, helpfulness, and precise context adherence during multi-turn conversations.</p>
+            <h2 id="s3-title">03. Chat Models & Alignment</h2>
+            <p id="s3-desc">Chat models incorporate safety layers and Reinforcement Learning from Human Feedback (RLHF) to ensure helpful, safe, and coherent multi-turn interactions.</p>
         </div>
         <!-- Slide 4 -->
         <div class="slide">
-            <h2>04. Designing AI Applications</h2>
-            <p>Integrating prompts into real-world applications involves robust API management, error handling, system prompt structuring, and Retrieval-Augmented Generation (RAG).</p>
+            <h2 id="s4-title">04. Designing AI Applications</h2>
+            <p id="s4-desc">Building real-world apps involves system prompts, API orchestration, handling latency, and integrating Retrieval-Augmented Generation (RAG) for up-to-date data.</p>
+        </div>
+        <!-- Slide 5 -->
+        <div class="slide">
+            <h2 id="s5-title">05. Advanced Prompts & Context</h2>
+            <p id="s5-desc">Mastering few-shot prompting, chain-of-thought reasoning, and constraint-based generation to tackle complex reasoning and programming tasks successfully.</p>
         </div>
 
         <div class="buttons">
-            <button onclick="prevSlide()">Previous</button>
-            <button onclick="nextSlide()">Next</button>
+            <button class="nav-btn" onclick="prevSlide()" id="btn-prev">Previous</button>
+            <button class="nav-btn" onclick="nextSlide()" id="btn-next">Next</button>
         </div>
     </div>
 
@@ -141,6 +179,7 @@
         <span class="dot" onclick="currentSlide(2)"></span>
         <span class="dot" onclick="currentSlide(3)"></span>
         <span class="dot" onclick="currentSlide(4)"></span>
+        <span class="dot" onclick="currentSlide(5)"></span>
     </div>
 </div>
 
@@ -148,32 +187,77 @@
     let slideIndex = 1;
     showSlides(slideIndex);
 
-    function nextSlide() {
-        showSlides(slideIndex += 1);
-    }
-
-    function prevSlide() {
-        showSlides(slideIndex -= 1);
-    }
-
-    function currentSlide(n) {
-        showSlides(slideIndex = n);
-    }
+    function nextSlide() { showSlides(slideIndex += 1); }
+    function prevSlide() { showSlides(slideIndex -= 1); }
+    function currentSlide(n) { showSlides(slideIndex = n); }
 
     function showSlides(n) {
-        let i;
         let slides = document.getElementsByClassName("slide");
         let dots = document.getElementsByClassName("dot");
-        if (n > slides.length) {slideIndex = 1}
-        if (n < 1) {slideIndex = slides.length}
-        for (i = 0; i < slides.length; i++) {
-            slides[i].classList.remove("active");
+        if (n > slides.length) { slideIndex = 1; }
+        if (n < 1) { slideIndex = slides.length; }
+        for (let i = 0; i < slides.length; i++) { slides[i].classList.remove("active"); }
+        for (let i = 0; i < dots.length; i++) { dots[i].classList.remove("active"); }
+        slides[slideIndex - 1].classList.add("active");
+        dots[slideIndex - 1].classList.add("active");
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        if (body.getAttribute("data-theme") === "dark") {
+            body.setAttribute("data-theme", "light");
+        } else {
+            body.setAttribute("data-theme", "dark");
         }
-        for (i = 0; i < dots.length; i++) {
-            dots[i].classList.remove("active");
+    }
+
+    let currentLang = 'en';
+    function toggleLanguage() {
+        if (currentLang === 'en') {
+            currentLang = 'tr';
+            document.getElementById('main-title').innerText = "Prompt Mühendisliği & Yapay Zeka Rehberi";
+            document.getElementById('main-subtitle').innerText = "Tüm ders materyallerini, LLM yapılarını ve uygulamaları kapsayan kapsamlı rehber.";
+            
+            document.getElementById('s1-title').innerText = "01. Prompt Giriş";
+            document.getElementById('s1-desc').innerText = "Prompt mühendisliği, yapay zeka modellerine hassas talimatlar verme sanatıdır. İnsan niyeti ile makine algısını birleştirir.";
+            
+            document.getElementById('s2-title').innerText = "02. LLM'leri Anlamak";
+            document.getElementById('s2-desc').innerText = "Büyük Dil Modelleri, devasa sinir ağları ve transformer mimarileri kullanarak kelime olasılıklarını hesaplar.";
+            
+            document.getElementById('s3-title').innerText = "03. Sohbet Modelleri";
+            document.getElementById('s3-desc').innerText = "Sohbet modelleri, insan geri bildirimiyle pekiştirmeli öğrenme (RLHF) süreçlerinden geçerek güvenli yanıtlar üretir.";
+            
+            document.getElementById('s4-title').innerText = "04. AI Uygulamaları Geliştirme";
+            document.getElementById('s4-desc').innerText = "Gerçek dünya uygulamaları kurmak; sistem promptları, API yönetimi ve RAG entegrasyonunu gerektirir.";
+            
+            document.getElementById('s5-title').innerText = "05. Gelişmiş Promptlar";
+            document.getElementById('s5-desc').innerText = "Karmaşık mantıksal problemleri çözmek için few-shot ve zincirleme düşünce (chain-of-thought) teknikleri kullanılır.";
+
+            document.getElementById('btn-prev').innerText = "Önceki";
+            document.getElementById('btn-next').innerText = "Sonraki";
+        } else {
+            currentLang = 'en';
+            document.getElementById('main-title').innerText = "Prompt Engineering & AI Masterclass";
+            document.getElementById('main-subtitle').innerText = "Comprehensive guide covering all course materials, LLMs, chat models, and applications.";
+            
+            document.getElementById('s1-title').innerText = "01. Introduction to Prompting";
+            document.getElementById('s1-desc').innerText = "Prompt engineering is the foundation of structuring precise instructions for AI models. It bridges human intent and machine understanding.";
+            
+            document.getElementById('s2-title').innerText = "02. Understanding LLMs";
+            document.getElementById('s2-desc').innerText = "Large Language Models use massive neural networks and transformer architectures to generate human-like text outputs.";
+            
+            document.getElementById('s3-title').innerText = "03. Chat Models & Alignment";
+            document.getElementById('s3-desc').innerText = "Chat models incorporate safety layers and RLHF to ensure helpful, safe, and coherent multi-turn interactions.";
+            
+            document.getElementById('s4-title').innerText = "04. Designing AI Applications";
+            document.getElementById('s4-desc').innerText = "Building real-world apps involves system prompts, API orchestration, and integrating RAG for up-to-date data.";
+            
+            document.getElementById('s5-title').innerText = "05. Advanced Prompts & Context";
+            document.getElementById('s5-desc').innerText = "Mastering few-shot prompting and chain-of-thought reasoning to tackle complex tasks successfully.";
+
+            document.getElementById('btn-prev').innerText = "Previous";
+            document.getElementById('btn-next').innerText = "Next";
         }
-        slides[slideIndex-1].classList.add("active");
-        dots[slideIndex-1].classList.add("active");
     }
 </script>
 
