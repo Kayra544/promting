@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="dark light">
   <meta name="description" content="An illustrated introduction to prompt engineering: language models, attention, transformers, and the design of useful prompts.">
   <title>Introduction to Prompt Engineering · promting</title>
   <style>
@@ -24,8 +24,21 @@
       scroll-behavior: smooth;
     }
 
+    [data-theme="light"] {
+      --ink: #18272a;
+      --muted: #526368;
+      --line: #d9ded9;
+      --paper: #f7f6f1;
+      --card: #fffefa;
+      --teal: #155a59;
+      --teal-soft: #e5efeb;
+      --orange: #ec784b;
+      --orange-soft: #fff0e5;
+      --shadow: 0 18px 50px rgb(24 39 42 / 7%);
+    }
+
     * { box-sizing: border-box; }
-    body { margin: 0; line-height: 1.68; }
+    body { margin: 0; line-height: 1.68; transition: background 0.3s, color 0.3s; }
     a { color: var(--teal); text-underline-offset: .18em; }
     a:hover { color: #a78bfa; }
     button, summary { font: inherit; }
@@ -34,16 +47,19 @@
     .skip-link:focus { top: 12px; }
     .progress { position: fixed; inset: 0 auto auto 0; z-index: 30; width: 0; height: 4px; background: var(--orange); }
 
-    .site-header { position: sticky; top: 0; z-index: 10; background: rgba(17, 24, 39, 0.94); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+    .site-header { position: sticky; top: 0; z-index: 10; background: var(--paper); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); transition: background 0.3s; }
     .header-inner { max-width: 1240px; min-height: 70px; margin: auto; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
     .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); font-size: .88rem; font-weight: 800; letter-spacing: .08em; text-decoration: none; text-transform: uppercase; white-space: nowrap; }
     .brand-mark { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 10px; color: white; background: var(--teal); font-size: .76rem; letter-spacing: 0; }
-    .top-nav { display: flex; align-items: center; gap: 25px; font-size: .84rem; font-weight: 650; }
+    .top-nav { display: flex; align-items: center; gap: 20px; font-size: .84rem; font-weight: 650; }
     .top-nav a { color: var(--muted); text-decoration: none; white-space: nowrap; }
     .top-nav a:hover { color: var(--teal); }
-    .top-nav .nav-pill { padding: 9px 15px; border: 1px solid var(--teal); border-radius: 999px; color: var(--teal); }
+    
+    .controls-group { display: flex; align-items: center; gap: 10px; }
+    .ctrl-btn { background: var(--teal-soft); border: 1px solid var(--line); color: var(--teal); padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 0.78rem; font-weight: 700; transition: 0.2s; }
+    .ctrl-btn:hover { background: var(--teal); color: white; }
 
-    .hero { position: relative; overflow: hidden; background: #111827; border-bottom: 1px solid var(--line); }
+    .hero { position: relative; overflow: hidden; background: var(--card); border-bottom: 1px solid var(--line); }
     .hero::before { content: ""; position: absolute; width: 550px; height: 550px; right: -150px; top: -220px; border: 1px solid rgba(139, 92, 246, 0.15); border-radius: 50%; box-shadow: 0 0 0 85px rgba(139, 92, 246, 0.03), 0 0 0 170px rgba(139, 92, 246, 0.03); pointer-events: none; }
     .hero-inner { position: relative; max-width: 1240px; min-height: 540px; margin: auto; padding: 80px 32px; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(340px, .9fr); align-items: center; gap: 70px; }
     .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--orange); font-size: .74rem; font-weight: 850; letter-spacing: .15em; text-transform: uppercase; }
@@ -58,9 +74,9 @@
     .read-time { color: var(--muted); font-size: .83rem; font-weight: 650; }
     .hero-demo { position: relative; padding: 25px; border: 1px solid var(--line); border-radius: 20px; background: var(--card); box-shadow: var(--shadow); transform: rotate(1deg); }
     .demo-label { display: block; color: var(--muted); font-size: .69rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-    .demo-input { margin: 13px 0 21px; padding: 20px 21px; border-radius: 12px; background: #111827; border: 1px solid var(--line); font-family: Georgia, serif; font-size: 1.22rem; line-height: 1.4; color: #60a5fa; }
+    .demo-input { margin: 13px 0 21px; padding: 20px 21px; border-radius: 12px; background: var(--paper); border: 1px solid var(--line); font-family: Georgia, serif; font-size: 1.22rem; line-height: 1.4; color: var(--orange); }
     .demo-options { display: grid; gap: 9px; }
-    .demo-option { display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; border: 1px solid var(--line); border-radius: 9px; font-size: .82rem; line-height: 1.4; background: #111827; }
+    .demo-option { display: flex; gap: 12px; align-items: baseline; padding: 12px 14px; border: 1px solid var(--line); border-radius: 9px; font-size: .82rem; line-height: 1.4; background: var(--paper); }
     .demo-option b { color: var(--orange); font-size: .73rem; text-transform: uppercase; white-space: nowrap; }
     .demo-foot { margin: 17px 2px 0; color: var(--muted); font-size: .76rem; }
 
@@ -69,7 +85,7 @@
     .side-nav p { margin: 0 0 17px; color: var(--muted); font-size: .7rem; font-weight: 850; letter-spacing: .16em; text-transform: uppercase; }
     .side-nav a { display: block; padding: 8px 0 8px 14px; border-left: 2px solid transparent; color: var(--muted); text-decoration: none; font-size: .83rem; line-height: 1.3; }
     .side-nav a:hover, .side-nav a.active { border-color: var(--orange); color: var(--ink); font-weight: 700; }
-    .side-nav .aside-note { margin-top: 28px; padding: 15px 17px; border-radius: 10px; background: var(--teal-soft); color: #c4b5fd; font-size: .76rem; line-height: 1.55; border: 1px solid rgba(139, 92, 246, 0.2); }
+    .side-nav .aside-note { margin-top: 28px; padding: 15px 17px; border-radius: 10px; background: var(--teal-soft); color: var(--ink); font-size: .76rem; line-height: 1.55; border: 1px solid var(--line); }
     main { min-width: 0; }
     section { scroll-margin-top: 100px; margin-bottom: 100px; }
     section:last-child { margin-bottom: 0; }
@@ -81,9 +97,8 @@
     .callout { margin: 30px 0; padding: 23px 26px; border-left: 4px solid var(--orange); border-radius: 0 12px 12px 0; background: var(--orange-soft); }
     .callout p { margin: 0; color: var(--ink); }
     .callout strong { color: var(--orange); }
-    .quote { margin: 27px 0; padding: 24px 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); font-family: Georgia, serif; font-size: 1.35rem; line-height: 1.5; color: #60a5fa; }
-    .small-caps { color: var(--muted); font-size: .73rem; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
-
+    .quote { margin: 27px 0; padding: 24px 28px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); font-family: Georgia, serif; font-size: 1.35rem; line-height: 1.5; color: var(--orange); }
+    
     .trio, .limit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 30px 0; }
     .mini-card, .limit-card { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
     .mini-card .number { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--teal-soft); color: var(--teal); font-size: .75rem; font-weight: 800; }
@@ -99,7 +114,7 @@
     .timeline span { color: var(--muted); font-size: .9rem; line-height: 1.55; }
 
     .flow { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 9px; margin: 26px 0; padding: 22px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
-    .flow span:not(.arrow) { padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: #111827; font-size: .79rem; font-weight: 750; text-align: center; color: var(--ink); }
+    .flow span:not(.arrow) { padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); font-size: .79rem; font-weight: 750; text-align: center; color: var(--ink); }
     .flow .arrow { color: var(--orange); font-weight: 850; }
     .comparison { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 30px 0; }
     .comparison > div { padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
@@ -113,44 +128,48 @@
     .gpt-list b { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 11px; background: var(--teal); color: white; font-family: Georgia, serif; font-size: 1.5rem; }
     .gpt-list strong { display: block; margin: 15px 0 6px; font-size: .9rem; color: var(--ink); }
     .gpt-list span { display: block; color: var(--muted); font-size: .83rem; line-height: 1.5; }
-    .formula { margin: 25px 0; padding: 20px; border-radius: 11px; background: var(--card); border: 1px solid var(--line); text-align: center; font-family: Georgia, serif; font-size: 1.28rem; color: #60a5fa; }
-    .formula small { display: block; margin-top: 5px; color: var(--muted); font-family: inherit; font-size: .78rem; }
+    .formula { margin: 25px 0; padding: 20px; border-radius: 11px; background: var(--card); border: 1px solid var(--line); text-align: center; font-family: Georgia, serif; font-size: 1.28rem; color: var(--orange); }
+    .formula small { display: block; margin-top: 5px; color: var(--muted); font-size: .78rem; }
 
     .prompt-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 14px; margin: 30px 0 24px; }
     .prompt-card { overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
     .prompt-card.good { border-color: rgba(16, 185, 129, 0.4); }
     .prompt-card header { padding: 13px 18px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: .75rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
     .prompt-card.good header { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    pre { margin: 0; padding: 20px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; line-height: 1.7; }
-    .prompt-card pre { color: #e5e7eb; }
+    pre { margin: 0; padding: 20px; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; line-height: 1.7; color: var(--ink); }
     .prompt-ingredients { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 25px; }
-    .prompt-ingredients span { padding: 6px 11px; border-radius: 999px; background: var(--teal-soft); color: #c4b5fd; font-size: .78rem; font-weight: 750; }
+    .prompt-ingredients span { padding: 6px 11px; border-radius: 999px; background: var(--teal-soft); color: var(--teal); font-size: .78rem; font-weight: 750; }
 
     .app-flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 30px 0; }
     .app-flow > div { min-height: 117px; padding: 17px; border: 1px solid var(--line); border-radius: 11px; background: var(--card); }
     .app-flow b { display: block; margin-bottom: 8px; color: var(--orange); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
     .app-flow span { font-size: .9rem; font-weight: 650; line-height: 1.35; color: var(--ink); }
-    .app-flow .model { background: rgba(139, 92, 246, 0.2); border-color: var(--teal); }
-    .app-flow .model b { color: #c4b5fd; }
-    .app-flow .result { border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.05); }
+    .app-flow .model { background: var(--teal-soft); border-color: var(--teal); }
+    .app-flow .model b { color: var(--teal); }
+    .app-flow .result { border-color: rgba(56, 189, 248, 0.4); background: var(--orange-soft); }
     .app-flow .result b { color: var(--orange); }
+    
     .question-table { width: 100%; border-collapse: collapse; margin: 26px 0; font-size: .9rem; }
     .question-table th, .question-table td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; color: var(--muted); }
     .question-table th { width: 28%; color: var(--orange); font-weight: 700; }
     .question-table tr:first-child th, .question-table tr:first-child td { border-top: 1px solid var(--line); }
+    
     .limit-card { border-top: 4px solid var(--orange); }
     .limit-card h3 { margin-top: 4px; color: var(--ink); }
     .glossary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 25px 0 38px; }
     .glossary > div { padding: 16px 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
     .glossary dt { color: var(--orange); font-weight: 800; }
     .glossary dd { margin: 4px 0 0; color: var(--muted); font-size: .84rem; line-height: 1.5; }
+    
     .takeaways { margin: 18px 0 35px; padding-left: 23px; color: var(--muted); }
     .takeaways li { padding-left: 5px; margin-bottom: 9px; }
     .takeaways li::marker { color: var(--orange); font-weight: 800; }
+    
     details { margin: 10px 0; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
     summary { padding: 15px 18px; cursor: pointer; font-weight: 700; line-height: 1.4; color: var(--ink); }
     details p { padding: 0 18px 16px; margin: 0; color: var(--muted); font-size: .9rem; }
-    .site-footer { border-top: 1px solid var(--line); background: #111827; }
+    
+    .site-footer { border-top: 1px solid var(--line); background: var(--card); }
     .footer-inner { max-width: 1240px; margin: auto; padding: 28px 32px; display: flex; justify-content: space-between; gap: 20px; color: var(--muted); font-size: .8rem; }
     .footer-inner a { font-weight: 750; text-decoration: none; color: var(--teal); }
 
@@ -161,7 +180,7 @@
     }
     @media (max-width: 720px) {
       .header-inner { min-height: 62px; padding: 0 20px; }
-      .top-nav a:not(.nav-pill) { display: none; }
+      .top-nav a { display: none; }
       .hero-inner { padding: 54px 20px 60px; grid-template-columns: 1fr; min-height: auto; gap: 36px; }
       h1 { font-size: clamp(3.1rem, 12vw, 4.2rem); }
       .hero-demo { max-width: 530px; transform: none; }
@@ -173,18 +192,6 @@
       .app-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .footer-inner { padding: 25px 20px; flex-wrap: wrap; }
     }
-    @media (max-width: 440px) {
-      .brand { font-size: .77rem; }
-      .top-nav .nav-pill { padding: 7px 10px; font-size: .78rem; }
-      .hero-actions { flex-wrap: wrap; }
-      .timeline::before { left: 65px; }
-      .timeline li { grid-template-columns: 66px minmax(0, 1fr); gap: 16px; }
-      .timeline li::before { left: 60px; }
-      .app-flow { grid-template-columns: 1fr; }
-      .question-table th { width: 33%; }
-      .question-table th, .question-table td { padding: 10px 8px; font-size: .83rem; }
-    }
-    @media (prefers-reduced-motion: reduce) { :root { scroll-behavior: auto; } }
   </style>
 </head>
 <body>
@@ -192,200 +199,198 @@
   <div class="progress" id="progress" aria-hidden="true"></div>
   <header class="site-header">
     <div class="header-inner">
-      <a class="brand" href="#top" aria-label="promting, back to top"><span class="brand-mark">01</span> promting / field notes</a>
-      <nav class="top-nav" aria-label="Quick navigation">
-        <a href="#history">History</a>
-        <a href="#attention">Attention</a>
-        <a href="#prompt">The prompt</a>
-        <a class="nav-pill" href="#recap">Key ideas ↗</a>
-      </nav>
+      <a class="brand" href="#top" aria-label="promting, back to top"><span class="brand-mark">01</span> <span data-tr="promting / saha notları" data-en="promting / field notes">promting / field notes</span></a>
+      <div class="controls-group">
+        <button class="ctrl-btn" onclick="toggleTheme()" id="theme-btn">☀️ Light</button>
+        <button class="ctrl-btn" onclick="toggleLang()" id="lang-btn">TR</button>
+      </div>
     </div>
   </header>
 
   <div class="hero" id="top">
     <div class="hero-inner">
       <div>
-        <span class="eyebrow">Chapter 01 · Approximately 10 minutes</span>
-        <h1>Introduction to prompt engineering.</h1>
-        <p class="hero-lead">A language model continues the information it receives. Prompt engineering shapes that continuation into something useful, relevant, and reliable.</p>
+        <span class="eyebrow" data-tr="Bölüm 01 · Yaklaşık 10 dakika" data-en="Chapter 01 · Approximately 10 minutes">Chapter 01 · Approximately 10 minutes</span>
+        <h1 data-tr="İstem mühendisliğine giriş." data-en="Introduction to prompt engineering.">Introduction to prompt engineering.</h1>
+        <p class="hero-lead" data-tr="Bir dil modeli aldığı bilgiyi devam ettirir. İstem mühendisliği, bu devamlılığı faydalı, ilgili ve güvenilir bir şeye dönüştürür." data-en="A language model continues the information it receives. Prompt engineering shapes that continuation into something useful, relevant, and reliable.">A language model continues the information it receives. Prompt engineering shapes that continuation into something useful, relevant, and reliable.</p>
         <div class="hero-actions">
-          <a class="button" href="#main">Start reading <span aria-hidden="true">↓</span></a>
-          <span class="read-time">History · Attention · Transformers · Prompts</span>
+          <a class="button" href="#main"><span data-tr="Okumaya başla" data-en="Start reading">Start reading</span> <span aria-hidden="true">↓</span></a>
+          <span class="read-time" data-tr="Geçmiş · Dikkat · Transformer · İstemler" data-en="History · Attention · Transformers · Prompts">History · Attention · Transformers · Prompts</span>
         </div>
       </div>
-      <div class="hero-demo" aria-label="Illustration of three possible continuations for the same opening sentence">
-        <span class="demo-label">One opening, many continuations</span>
+      <div class="hero-demo">
+        <span class="demo-label" data-tr="Tek başlangıç, birçok devam" data-en="One opening, many continuations">One opening, many continuations</span>
         <div class="demo-input">“The most important discovery of the experiment was…”</div>
         <div class="demo-options">
-          <div class="demo-option"><b>Report</b><span>…a measurable change in the observed samples.</span></div>
-          <div class="demo-option"><b>Story</b><span>…hidden behind the locked laboratory door.</span></div>
-          <div class="demo-option"><b>Summary</b><span>…that the first hypothesis did not hold.</span></div>
+          <div class="demo-option"><b data-tr="Rapor" data-en="Report">Report</b><span data-tr="…gözlemlenen numunelerde ölçülebilir bir değişim." data-en="…a measurable change in the observed samples.">…a measurable change in the observed samples.</span></div>
+          <div class="demo-option"><b data-tr="Hikaye" data-en="Story">Story</b><span data-tr="…kilitli laboratuvar kapısının arkasında gizli." data-en="…hidden behind the locked laboratory door.">…hidden behind the locked laboratory door.</span></div>
+          <div class="demo-option"><b data-tr="Özet" data-en="Summary">Summary</b><span data-tr="…ilk hipotezin doğrulanmadığı." data-en="…that the first hypothesis did not hold.">…that the first hypothesis did not hold.</span></div>
         </div>
-        <p class="demo-foot">Illustrative examples · Context changes what comes next.</p>
+        <p class="demo-foot" data-tr="Örnekler · İçerik sonrakini değiştirir." data-en="Illustrative examples · Context changes what comes next.">Illustrative examples · Context changes what comes next.</p>
       </div>
     </div>
   </div>
 
   <div class="content-shell">
     <aside class="side-nav" aria-label="On this page">
-      <p>On this page</p>
+      <p data-tr="Bu sayfada" data-en="On this page">On this page</p>
       <nav>
-        <a href="#idea">The central question</a>
-        <a href="#history">How we got here</a>
-        <a href="#attention">The attention bottleneck</a>
-        <a href="#transformer">Transformer and GPT</a>
-        <a href="#prompt">Designing a prompt</a>
-        <a href="#application">From prompt to application</a>
-        <a href="#limits">Three limitations</a>
-        <a href="#recap">Recap and questions</a>
+        <a href="#idea" data-tr="Merkezi soru" data-en="The central question">The central question</a>
+        <a href="#history" data-tr="Buraya nasıl geldik" data-en="How we got here">How we got here</a>
+        <a href="#attention" data-tr="Dikkat dar boğazı" data-en="The attention bottleneck">The attention bottleneck</a>
+        <a href="#transformer" data-tr="Transformer ve GPT" data-en="Transformer and GPT">Transformer and GPT</a>
+        <a href="#prompt" data-tr="İstem tasarlama" data-en="Designing a prompt">Designing a prompt</a>
+        <a href="#application" data-tr="İstemden uygulamaya" data-en="From prompt to application">From prompt to application</a>
+        <a href="#limits" data-tr="Üç kısıtlama" data-en="Three limitations">Three limitations</a>
+        <a href="#recap" data-tr="Özet ve sorular" data-en="Recap and questions">Recap and questions</a>
       </nav>
-      <div class="aside-note">A short guide to the ideas behind practical prompting.</div>
+      <div class="aside-note" data-tr="Pratik istemlerin arkasındaki fikirlere kısa bir rehber." data-en="A short guide to the ideas behind practical prompting.">A short guide to the ideas behind practical prompting.</div>
     </aside>
 
     <main id="main">
       <section id="idea" aria-labelledby="idea-title">
-        <span class="section-kicker">The starting point</span>
-        <h2 id="idea-title">The central question</h2>
-        <p class="section-intro">What makes a model's next words useful for a particular task?</p>
+        <span class="section-kicker" data-tr="Başlangıç noktası" data-en="The starting point">The starting point</span>
+        <h2 id="idea-title" data-tr="Merkezi soru" data-en="The central question">The central question</h2>
+        <p class="section-intro" data-tr="Bir modelin sonraki kelimelerini belirli bir görev için ne faydalı kılar?" data-en="What makes a model's next words useful for a particular task?">What makes a model's next words useful for a particular task?</p>
         <div class="quote">“The most important discovery of the experiment was…”</div>
-        <p>The same opening can lead to a scientific report, a dramatic story, or a short summary. The words surrounding the request influence which kind of continuation is likely.</p>
-        <p><strong>Prompt engineering</strong> means designing instructions, examples, and context so that the output serves a purpose. In an application, it also includes deciding what information to retrieve, how to structure a conversation, and how to use the result.</p>
-        <div class="trio" aria-label="Three parts of prompt engineering">
-          <div class="mini-card"><span class="number">01</span><h3>Instructions</h3><p>Describe the task, audience, and desired behavior.</p></div>
-          <div class="mini-card"><span class="number">02</span><h3>Context</h3><p>Provide the relevant facts, examples, and conversation history.</p></div>
-          <div class="mini-card"><span class="number">03</span><h3>Output</h3><p>Specify a useful format and plan how to check the result.</p></div>
+        <p data-tr="Aynı başlangıç bilimsel bir rapora, dramatik bir hikayeye veya kısa bir özete yol açabilir. İstegin etrafındaki kelimeler ne tür bir devamlılığın olası olduğunu etkiler." data-en="The same opening can lead to a scientific report, a dramatic story, or a short summary. The words surrounding the request influence which kind of continuation is likely.">The same opening can lead to a scientific report, a dramatic story, or a short summary. The words surrounding the request influence which kind of continuation is likely.</p>
+        <p><strong data-tr="İstem mühendisliği" data-en="Prompt engineering">Prompt engineering</strong> <span data-tr="çıktının bir amaca hizmet etmesi için talimatlar, örnekler ve bağlam tasarlamak demektir. Bir uygulamada, hangi bilgilerin alınacağını, konuşmanın nasıl yapılandırılacağını ve sonucun nasıl kullanılacağını da içerir." data-en="means designing instructions, examples, and context so that the output serves a purpose. In an application, it also includes deciding what information to retrieve, how to structure a conversation, and how to use the result.">means designing instructions, examples, and context so that the output serves a purpose. In an application, it also includes deciding what information to retrieve, how to structure a conversation, and how to use the result.</span></p>
+        <div class="trio">
+          <div class="mini-card"><span class="number">01</span><h3 data-tr="Talimatlar" data-en="Instructions">Instructions</h3><p data-tr="Görevi, hedef kitleyi ve istenen davranışı tanımlayın." data-en="Describe the task, audience, and desired behavior.">Describe the task, audience, and desired behavior.</p></div>
+          <div class="mini-card"><span class="number">02</span><h3 data-tr="Bağlam" data-en="Context">Context</h3><p data-tr="İlgili gerçekleri, örnekleri ve sohbet geçmişini sağlayın." data-en="Provide the relevant facts, examples, and conversation history.">Provide the relevant facts, examples, and conversation history.</p></div>
+          <div class="mini-card"><span class="number">03</span><h3 data-tr="Çıktı" data-en="Output">Output</h3><p data-tr="Faydalı bir biçim belirtin ve sonucu nasıl kontrol edeceğinizi planlayın." data-en="Specify a useful format and plan how to check the result.">Specify a useful format and plan how to check the result.</p></div>
         </div>
       </section>
 
       <section id="history" aria-labelledby="history-title">
-        <span class="section-kicker">01 / Origins</span>
-        <h2 id="history-title">How did we get here?</h2>
-        <p class="section-intro">Modern assistants grew out of successive ways to represent and use context.</p>
+        <span class="section-kicker" data-tr="01 / Kökenler" data-en="01 / Origins">01 / Origins</span>
+        <h2 id="history-title" data-tr="Buraya nasıl geldik?" data-en="How did we get here?">How did we get here?</h2>
+        <p class="section-intro" data-tr="Modern asistanlar, bağlamı temsil etmenin ve kullanmanın ardışık yollarından doğdu." data-en="Modern assistants grew out of successive ways to represent and use context.">Modern assistants grew out of successive ways to represent and use context.</p>
         <ol class="timeline">
-          <li><time>1940s+</time><div><strong>Statistical language models</strong><span>Markov-style approaches predict text from a limited preceding context.</span></div></li>
-          <li><time>2014</time><div><strong>Sequence-to-sequence models</strong><span>An encoder and decoder transform one sequence into another, such as a translation.</span></div></li>
-          <li><time>2015</time><div><strong>Attention in neural sequence models</strong><span>The decoder can consult relevant parts of its input instead of relying on one compressed summary.</span></div></li>
-          <li><time>2017</time><div><strong>The Transformer</strong><span>Attention becomes the central mechanism for relating positions in a sequence.</span></div></li>
-          <li><time>2018</time><div><strong>GPT</strong><span>A transformer-based text generator is broadly pre-trained and then adapted to useful tasks.</span></div></li>
-          <li><time>GPT-2 → 3 → 4</time><div><strong>More capable models</strong><span>Prompting becomes a practical way to perform tasks without training a new model for each one.</span></div></li>
+          <li><time>1940s+</time><div><strong data-tr="İstatiksel dil modelleri" data-en="Statistical language models">Statistical language models</strong><span data-tr="Markov tarzı yaklaşımlar, metni sınırlı bir önceki bağlamdan tahmin eder." data-en="Markov-style approaches predict text from a limited preceding context.">Markov-style approaches predict text from a limited preceding context.</span></div></li>
+          <li><time>2014</time><div><strong data-tr="Diziden diziye modeller" data-en="Sequence-to-sequence models">Sequence-to-sequence models</strong><span data-tr="Kodlayıcı ve kod çözücü, bir diziyi çeviri gibi başka bir diziye dönüştürür." data-en="An encoder and decoder transform one sequence into another, such as a translation.">An encoder and decoder transform one sequence into another, such as a translation.</span></div></li>
+          <li><time>2015</time><div><strong data-tr="Sinirsel dizi modellerinde dikkat" data-en="Attention in neural sequence models">Attention in neural sequence models</strong><span data-tr="Kod çözücü, tek bir sıkıştırılmış özet yerine girişinin ilgili kısımlarına bakabilir." data-en="The decoder can consult relevant parts of its input instead of relying on one compressed summary.">The decoder can consult relevant parts of its input instead of relying on one compressed summary.</span></div></li>
+          <li><time>2017</time><div><strong data-tr="Transformer" data-en="The Transformer">The Transformer</strong><span data-tr="Dikkat, bir dizideki konumları ilişkilendirmek için merkezi mekanizma haline gelir." data-en="Attention becomes the central mechanism for relating positions in a sequence.">Attention becomes the central mechanism for relating positions in a sequence.</span></div></li>
+          <li><time>2018</time><div><strong data-tr="GPT" data-en="GPT">GPT</strong><span data-tr="Transformer tabanlı bir metin üreteci geniş ölçüde önceden eğitilir ve ardından yararlı görevlere uyarlanır." data-en="A transformer-based text generator is broadly pre-trained and then adapted to useful tasks.">A transformer-based text generator is broadly pre-trained and then adapted to useful tasks.</span></div></li>
+          <li><time>GPT-2 → 3 → 4</time><div><strong data-tr="Daha yetenekli modeller" data-en="More capable models">More capable models</strong><span data-tr="İstemler, her biri için yeni bir model eğitmeden görevleri yerine getirmenin pratik bir yolu haline gelir." data-en="Prompting becomes a practical way to perform tasks without training a new model for each one.">Prompting becomes a practical way to perform tasks without training a new model for each one.</span></div></li>
         </ol>
-        <div class="callout"><p><strong>Remember:</strong> This was a move from simple prediction with limited context to much more powerful context-sensitive prediction.</p></div>
+        <div class="callout"><p><strong data-tr="Unutmayın:" data-en="Remember:">Remember:</strong> <span data-tr="Bu, sınırlı bağlama sahip basit bir tahminden, çok daha güçlü bağlama duyarlı tahminde bulunmaya doğru bir adımdı." data-en="This was a move from simple prediction with limited context to much more powerful context-sensitive prediction.">This was a move from simple prediction with limited context to much more powerful context-sensitive prediction.</span></p></div>
       </section>
 
       <section id="attention" aria-labelledby="attention-title">
-        <span class="section-kicker">02 / The bottleneck</span>
-        <h2 id="attention-title">A sentence is not a single vector</h2>
-        <p class="section-intro">Early translation systems tried to squeeze an entire input into one fixed-size representation.</p>
-        <p>An <strong>encoder</strong> reads the source sentence and compresses it into a representation sometimes called a <em>thought vector</em>. A <strong>decoder</strong> then generates the translated sentence one token at a time.</p>
-        <div class="flow" aria-label="Sequence-to-sequence process">
-          <span>Source sentence</span><span class="arrow" aria-hidden="true">→</span><span>Encoder</span><span class="arrow" aria-hidden="true">→</span><span>Compressed vector</span><span class="arrow" aria-hidden="true">→</span><span>Decoder</span><span class="arrow" aria-hidden="true">→</span><span>Translation</span>
+        <span class="section-kicker" data-tr="02 / Darboğaz" data-en="02 / The bottleneck">02 / The bottleneck</span>
+        <h2 id="attention-title" data-tr="Bir cümle tek bir vektör değildir" data-en="A sentence is not a single vector">A sentence is not a single vector</h2>
+        <p class="section-intro" data-tr="Erken çeviri sistemleri tüm girdiyi sabit boyutlu tek bir temsile sıkıştırmaya çalıştı." data-en="Early translation systems tried to squeeze an entire input into one fixed-size representation.">Early translation systems tried to squeeze an entire input into one fixed-size representation.</p>
+        <p><strong data-tr="Kodlayıcı" data-en="encoder">encoder</strong> <span data-tr="kaynak cümleyi okur ve düşünce vektörü adı verilen bir temsile sıkıştırır. Bir " data-en="reads the source sentence and compresses it into a representation sometimes called a thought vector. A ">reads the source sentence and compresses it into a representation sometimes called a <em>thought vector</em>. A </span><strong data-tr="kod çözücü" data-en="decoder">decoder</strong> <span data-tr="ardından çevrilen cümleyi her seferinde bir belirteç (token) olarak üretir." data-en="then generates the translated sentence one token at a time.">then generates the translated sentence one token at a time.</span></p>
+        <div class="flow">
+          <span data-tr="Kaynak cümle" data-en="Source sentence">Source sentence</span><span class="arrow">→</span><span data-tr="Kodlayıcı" data-en="Encoder">Encoder</span><span class="arrow">→</span><span data-tr="Sıkıştırılmış vektör" data-en="Compressed vector">Compressed vector</span><span class="arrow">→</span><span data-tr="Kod çözücü" data-en="Decoder">Decoder</span><span class="arrow">→</span><span data-tr="Çeviri" data-en="Translation">Translation</span>
         </div>
-        <p>That can work for short input. But a paragraph may contain names, qualifications, and relationships that cannot all fit cleanly into one small summary. Important details can be lost before the decoder finishes.</p>
-        <h3>Attention changes the picture</h3>
-        <p>With attention, the decoder can consult multiple representations of the source words. At each output step, it gives more weight to the parts that matter for the next token.</p>
+        <p data-tr="Bu, kısa girdiler için çalışabilir. Ancak bir paragraf, küçük bir özet içine sığdırılamayan isimler, nitelikler ve ilişkiler içerebilir. Kod çözücü bitmeden önemli detaylar kaybolabilir." data-en="That can work for short input. But a paragraph may contain names, qualifications, and relationships that cannot all fit cleanly into one small summary. Important details can be lost before the decoder finishes.">That can work for short input. But a paragraph may contain names, qualifications, and relationships that cannot all fit cleanly into one small summary. Important details can be lost before the decoder finishes.</p>
+        <h3 data-tr="Dikkat resmi değiştirir" data-en="Attention changes the picture">Attention changes the picture</h3>
+        <p data-tr="Dikkat mekanizması ile kod çözücü, kaynak kelimelerin birden fazla temsiline başvurabilir. Her çıktı adımında, sonraki belirteç için önemli olan kısımlara daha fazla ağırlık verir." data-en="With attention, the decoder can consult multiple representations of the source words. At each output step, it gives more weight to the parts that matter for the next token.">With attention, the decoder can consult multiple representations of the source words. At each output step, it gives more weight to the parts that matter for the next token.</p>
         <div class="comparison">
-          <div><h3>Without attention</h3><ul><li>One summary carries most input information.</li><li>Details may disappear in long sequences.</li><li>The fixed-size representation creates a bottleneck.</li></ul></div>
-          <div><h3>With attention</h3><ul><li>The decoder consults a collection of source representations.</li><li>Different source words can matter at different steps.</li><li>Relevant context is easier to reach.</li></ul></div>
+          <div><h3 data-tr="Dikkatsiz" data-en="Without attention">Without attention</h3><ul><li data-tr="Tek bir özet, giriş bilgilerinin çoğunu taşır." data-en="One summary carries most input information.">One summary carries most input information.</li><li data-tr="Uzun dizilerde detaylar kaybolabilir." data-en="Details may disappear in long sequences.">Details may disappear in long sequences.</li><li data-tr="Sabit boyutlu temsil bir darboğaz yaratır." data-en="The fixed-size representation creates a bottleneck.">The fixed-size representation creates a bottleneck.</li></ul></div>
+          <div><h3 data-tr=" Dikkatli" data-en="With attention">With attention</h3><ul><li data-tr="Kod çözücü bir kaynak temsil koleksiyonuna danışır." data-en="The decoder consults a collection of source representations.">The decoder consults a collection of source representations.</li><li data-tr="Farklı kaynak kelimeler farklı adımlarda önem taşıyabilir." data-en="Different source words can matter at different steps.">Different source words can matter at different steps.</li><li data-tr="İlgili bağlama ulaşmak daha kolaydır." data-en="Relevant context is easier to reach.">Relevant context is easier to reach.</li></ul></div>
         </div>
-        <div class="callout"><p><strong>Intuition:</strong> Not every input word matters equally at every moment.</p></div>
+        <div class="callout"><p><strong data-tr="Sezgi:" data-en="Intuition:">Intuition:</strong> <span data-tr="Her girdi kelimesi her an aynı derecede önemli değildir." data-en="Not every input word matters equally at every moment.">Not every input word matters equally at every moment.</span></p></div>
       </section>
 
       <section id="transformer" aria-labelledby="transformer-title">
-        <span class="section-kicker">03 / The architecture</span>
-        <h2 id="transformer-title">Attention becomes the architecture</h2>
-        <p class="section-intro">The 2017 transformer uses attention to connect information between token positions, without relying on recurrent processing through a sequence.</p>
-        <p>This made training on large text collections more practical and let models represent rich relationships across text.</p>
-        <h3>What does GPT mean?</h3>
-        <div class="gpt-list" aria-label="Meaning of GPT">
-          <div><b>G</b><strong>Generative</strong><span>Produces new content.</span></div>
-          <div><b>P</b><strong>Pre-trained</strong><span>Learns broadly from large datasets before adapting to particular uses.</span></div>
-          <div><b>T</b><strong>Transformer</strong><span>Uses transformer layers, including attention, to process context.</span></div>
+        <span class="section-kicker" data-tr="03 / Mimari" data-en="03 / The architecture">03 / The architecture</span>
+        <h2 id="transformer-title" data-tr="Dikkat mimari haline gelir" data-en="Attention becomes the architecture">Attention becomes the architecture</h2>
+        <p class="section-intro" data-tr="2017 transformer'ı, bir dizi boyunca yinelemeli işleme güvenmeden, belirteç konumları arasındaki bilgiyi bağlamak için dikkati kullanır." data-en="The 2017 transformer uses attention to connect information between token positions, without relying on recurrent processing through a sequence.">The 2017 transformer uses attention to connect information between token positions, without relying on recurrent processing through a sequence.</p>
+        <p data-tr="Bu, geniş metin koleksiyonları üzerinde eğitimi daha pratik hale getirdi ve modellerin metinler arası zengin ilişkileri temsil etmesini sağladı." data-en="This made training on large text collections more practical and let models represent rich relationships across text.">This made training on large text collections more practical and let models represent rich relationships across text.</p>
+        <h3 data-tr="GPT ne anlama gelir?" data-en="What does GPT mean?">What does GPT mean?</h3>
+        <div class="gpt-list">
+          <div><b>G</b><strong data-tr="Üretken (Generative)" data-en="Generative">Generative</strong><span data-tr="Yeni içerik üretir." data-en="Produces new content.">Produces new content.</span></div>
+          <div><b>P</b><strong data-tr="Önceden eğitilmiş (Pre-trained)" data-en="Pre-trained">Pre-trained</strong><span data-tr="Belirli kullanımlara uyarlanmadan önce büyük veri kümelerinden geniş çapta öğrenir." data-en="Learns broadly from large datasets before adapting to particular uses.">Learns broadly from large datasets before adapting to particular uses.</span></div>
+          <div><b>T</b><strong data-tr="Transformer" data-en="Transformer">Transformer</strong><span data-tr="Bağlamı işlemek için dikkat dahil transformer katmanlarını kullanır." data-en="Uses transformer layers, including attention, to process context.">Uses transformer layers, including attention, to process context.</span></div>
         </div>
-        <p>GPT-style text generation is usually <strong>autoregressive</strong>: the model estimates a distribution for the next token, selects one, appends it to the sequence, and repeats.</p>
-        <div class="formula">P(t<sub>n+1</sub> | t<sub>1</sub>, t<sub>2</sub>, …, t<sub>n</sub>)<small>Probability of a next token given the tokens so far</small></div>
-        <p>That repeated operation can yield answers, explanations, code, translations, and stories because the model has learned many forms of structured text.</p>
+        <p data-tr="GPT tarzı metin üretimi genellikle " data-en="GPT-style text generation is usually ">GPT-style text generation is usually <strong>autoregressive</strong>: <span data-tr="model bir sonraki belirteç için bir dağılım tahmin eder, birini seçer, diziye ekler ve tekrarlar." data-en="the model estimates a distribution for the next token, selects one, appends it to the sequence, and repeats.">the model estimates a distribution for the next token, selects one, appends it to the sequence, and repeats.</span></p>
+        <div class="formula">P(t<sub>n+1</sub> | t<sub>1</sub>, t<sub>2</sub>, …, t<sub>n</sub>)<small data-tr="Şuana kadarki belirteçler verildiğinde sonraki belirtecin olasılığı" data-en="Probability of a next token given the tokens so far">Probability of a next token given the tokens so far</small></div>
+        <p data-tr="Bu tekrarlanan işlem; yanıtlar, açıklamalar, kodlar, çeviriler ve hikayeler üretebilir çünkü model birçok yapılandırılmış metin biçimini öğrenmiştir." data-en="That repeated operation can yield answers, explanations, code, translations, and stories because the model has learned many forms of structured text.">That repeated operation can yield answers, explanations, code, translations, and stories because the model has learned many forms of structured text.</p>
       </section>
 
       <section id="prompt" aria-labelledby="prompt-title">
-        <span class="section-kicker">04 / In practice</span>
-        <h2 id="prompt-title">A prompt is more than a question</h2>
-        <p class="section-intro">Two requests can ask for the same topic while giving the model very different guidance.</p>
+        <span class="section-kicker" data-tr="04 / Pratikte" data-en="04 / In practice">04 / In practice</span>
+        <h2 id="prompt-title" data-tr="İstem bir sorudan ibaret değildir" data-en="A prompt is more than a question">A prompt is more than a question</h2>
+        <p class="section-intro" data-tr="İki talep, modele çok farklı rehberlikler sunarken aynı konuyu sorabilir." data-en="Two requests can ask for the same topic while giving the model very different guidance.">Two requests can ask for the same topic while giving the model very different guidance.</p>
         <div class="prompt-grid">
-          <div class="prompt-card"><header>Vague request</header><pre>Explain transformers.</pre></div>
-          <div class="prompt-card good"><header>Designed request</header><pre>Explain the transformer architecture to first-year computer science students.
+          <div class="prompt-card"><header data-tr="Belirsiz talep" data-en="Vague request">Vague request</header><pre>Explain transformers.</pre></div>
+          <div class="prompt-card good"><header data-tr="Tasarlanmış talep" data-en="Designed request">Designed request</header><pre>Explain the transformer architecture to first-year computer science students.
 Begin with the problem faced by seq2seq models, then introduce attention.
 Use one simple analogy, one comparison table, and no more than 300 words.
 Define any technical term before using it.</pre></div>
         </div>
-        <p>The second request makes four choices explicit:</p>
-        <div class="prompt-ingredients" aria-label="Parts of the designed prompt"><span>Audience</span><span>Scope and sequence</span><span>Presentation format</span><span>Constraints</span></div>
-        <p>Instead of hoping for a good completion, it designs the conditions for one.</p>
+        <p data-tr="İkinci talep dört seçeneği açık hale getirir:" data-en="The second request makes four choices explicit:">The second request makes four choices explicit:</p>
+        <div class="prompt-ingredients"><span>Audience</span><span>Scope and sequence</span><span>Presentation format</span><span>Constraints</span></div>
+        <p data-tr="İyi bir tamamlama ummak yerine, bunun koşullarını tasarlar." data-en="Instead of hoping for a good completion, it designs the conditions for one.">Instead of hoping for a good completion, it designs the conditions for one.</p>
       </section>
 
       <section id="application" aria-labelledby="application-title">
-        <span class="section-kicker">05 / Beyond the prompt</span>
-        <h2 id="application-title">From a prompt to an application</h2>
-        <p class="section-intro">A useful model interaction often has a third participant: the application that prepares the input and handles the output.</p>
-        <div class="app-flow" aria-label="Application flow from user problem to useful result">
-          <div><b>01 · User</b><span>Starts with a problem</span></div>
-          <div><b>02 · Application</b><span>Prepares instructions and relevant context</span></div>
-          <div class="model"><b>03 · Model</b><span>Generates an output</span></div>
-          <div><b>04 · Application</b><span>Checks, formats, or uses the output</span></div>
-          <div class="result"><b>05 · Result</b><span>Returns something useful to the user</span></div>
+        <span class="section-kicker" data-tr="05 / İstemin ötesinde" data-en="05 / Beyond the prompt">05 / Beyond the prompt</span>
+        <h2 id="application-title" data-tr="İstemden uygulamaya" data-en="From a prompt to an application">From a prompt to an application</h2>
+        <p class="section-intro" data-tr="Faydalı bir model etkileşimi genellikle üçüncü bir katılımcıya sahiptir: girdiyi hazırlayan ve çıktıyı işleyen uygulama." data-en="A useful model interaction often has a third participant: the application that prepares the input and handles the output.">A useful model interaction often has a third participant: the application that prepares the input and handles the output.</p>
+        <div class="app-flow">
+          <div><b data-tr="01 · Kullanıcı" data-en="01 · User">01 · User</b><span data-tr="Bir sorunla başlar" data-en="Starts with a problem">Starts with a problem</span></div>
+          <div><b data-tr="02 · Uygulama" data-en="02 · Application">02 · Application</b><span data-tr="Talimatları ve ilgili bağlamı hazırlar" data-en="Prepares instructions and relevant context">Prepares instructions and relevant context</span></div>
+          <div class="model"><b data-tr="03 · Model" data-en="03 · Model">03 · Model</b><span data-tr="Bir çıktı üretir" data-en="Generates an output">Generates an output</span></div>
+          <div><b data-tr="04 · Uygulama" data-en="04 · Application">04 · Application</b><span data-tr="Çıktıyı kontrol eder, biçimlendirir veya kullanır" data-en="Checks, formats, or uses the output">Checks, formats, or uses the output</span></div>
+          <div class="result"><b data-tr="05 · Sonuç" data-en="05 · Result">05 · Result</b><span data-tr="Kullanıcıya faydalı bir şey döndürür" data-en="Returns something useful to the user">Returns something useful to the user</span></div>
         </div>
-        <p>The application may retrieve documents, keep conversation history, validate an answer, format it, or call an external tool. That makes prompt engineering closely connected to application design.</p>
-        <h3>Where the engineering happens</h3>
+        <p data-tr="Uygulama belgeleri alabilir, sohbet geçmişini tutabilir, bir yanıtı doğrulayabilir, biçimlendirebilir veya harici bir aracı çağırabilir. Bu da istem mühendisliğini uygulama tasarımıyla yakından bağlar." data-en="The application may retrieve documents, keep conversation history, validate an answer, format it, or call an external tool. That makes prompt engineering closely connected to application design.">The application may retrieve documents, keep conversation history, validate an answer, format it, or call an external tool. That makes prompt engineering closely connected to application design.</p>
+        <h3 data-tr="Mühendisliğin gerçekleştiği yer" data-en="Where the engineering happens">Where the engineering happens</h3>
         <table class="question-table">
           <tbody>
-            <tr><th scope="row">Task</th><td>What is the user trying to accomplish?</td></tr>
-            <tr><th scope="row">Instructions</th><td>What behavior, style, and format are needed?</td></tr>
-            <tr><th scope="row">Context</th><td>What facts or documents must the model receive?</td></tr>
-            <tr><th scope="row">Interaction</th><td>Is this one response or a longer conversation?</td></tr>
-            <tr><th scope="row">Output handling</th><td>How will the result be checked, displayed, or used?</td></tr>
+            <tr><th scope="row" data-tr="Görev" data-en="Task">Task</th><td data-tr="Kullanıcı ne başarmaya çalışıyor?" data-en="What is the user trying to accomplish?">What is the user trying to accomplish?</td></tr>
+            <tr><th scope="row" data-tr="Talimatlar" data-en="Instructions">Instructions</th><td data-tr="Hangi davranış, stil ve biçim gereklidir?" data-en="What behavior, style, and format are needed?">What behavior, style, and format are needed?</td></tr>
+            <tr><th scope="row" data-tr="Bağlam" data-en="Context">Context</th><td data-tr="Model hangi gerçekleri veya belgeleri almalıdır?" data-en="What facts or documents must the model receive?">What facts or documents must the model receive?</td></tr>
+            <tr><th scope="row" data-tr="Etkileşim" data-en="Interaction">Interaction</th><td data-tr="Bu tek bir yanıt mı yoksa daha uzun bir sohbet mi?" data-en="Is this one response or a longer conversation?">Is this one response or a longer conversation?</td></tr>
+            <tr><th scope="row" data-tr="Çıktı işleme" data-en="Output handling">Output handling</th><td data-tr="Sonuç nasıl kontrol edilecek, görüntülenecek veya kullanılacak?" data-en="How will the result be checked, displayed, or used?">How will the result be checked, displayed, or used?</td></tr>
           </tbody>
         </table>
       </section>
 
       <section id="limits" aria-labelledby="limits-title">
-        <span class="section-kicker">06 / Reality check</span>
-        <h2 id="limits-title">Three limitations worth remembering</h2>
+        <span class="section-kicker" data-tr="06 / Gerçeklik kontrolü" data-en="06 / Reality check">06 / Reality check</span>
+        <h2 id="limits-title" data-tr="Hatırlanması gereken üç kısıtlama" data-en="Three limitations worth remembering">Three limitations worth remembering</h2>
         <div class="limit-grid">
-          <div class="limit-card"><h3>Not a search engine</h3><p>A model can produce plausible text without retrieving or verifying a source.</p></div>
-          <div class="limit-card"><h3>Finite context</h3><p>It only processes content available within its supported context limit.</p></div>
-          <div class="limit-card"><h3>Fluency is not accuracy</h3><p>A well-written answer may still contain factual or logical errors.</p></div>
+          <div class="limit-card"><h3 data-tr="Arama motoru değil" data-en="Not a search engine">Not a search engine</h3><p data-tr="Bir model, bir kaynağı almadan veya doğrulamadan makul metinler üretebilir." data-en="A model can produce plausible text without retrieving or verifying a source.">A model can produce plausible text without retrieving or verifying a source.</p></div>
+          <div class="limit-card"><h3 data-tr="Sınırlı bağlam" data-en="Finite context">Finite context</h3><p data-tr="Yalnızca desteklenen bağlam sınırları içinde bulunan içeriği işler." data-en="It only processes content available within its supported context limit.">It only processes content available within its supported context limit.</p></div>
+          <div class="limit-card"><h3 data-tr="Akıcılık doğruluk değildir" data-en="Fluency is not accuracy">Fluency is not accuracy</h3><p data-tr="İyi yazılmış bir yanıt hala yapısal veya mantıksal hatalar içerebilir." data-en="A well-written answer may still contain factual or logical errors.">A well-written answer may still contain factual or logical errors.</p></div>
         </div>
-        <p>Choosing the right information and checking important results are part of the engineering work.</p>
+        <p data-tr="Doğru bilgiyi seçmek ve önemli sonuçları kontrol etmek mühendislik çalışmasının bir parçasıdır." data-en="Choosing the right information and checking important results are part of the engineering work.">Choosing the right information and checking important results are part of the engineering work.</p>
       </section>
 
       <section id="recap" aria-labelledby="recap-title">
-        <span class="section-kicker">At a glance</span>
-        <h2 id="recap-title">Keep these ideas with you</h2>
+        <span class="section-kicker" data-tr="Bir bakışta" data-en="At a glance">At a glance</span>
+        <h2 id="recap-title" data-tr="Bu fikirleri aklınızda tutun" data-en="Keep these ideas with you">Keep these ideas with you</h2>
         <dl class="glossary">
-          <div><dt>Language model</dt><dd>Models patterns in sequences and generates plausible continuations.</dd></div>
-          <div><dt>Seq2seq</dt><dd>An encoder–decoder approach to converting one sequence into another.</dd></div>
-          <div><dt>Attention</dt><dd>Weights information from relevant token positions.</dd></div>
-          <div><dt>Transformer</dt><dd>A neural architecture built around attention and layered representations.</dd></div>
-          <div><dt>GPT</dt><dd>A generative, pre-trained model based on a transformer.</dd></div>
-          <div><dt>Prompt engineering</dt><dd>Designs instructions, context, and interactions for useful model behavior.</dd></div>
+          <div><dt data-tr="Dil modeli" data-en="Language model">Language model</dt><dd data-tr="Dizilerdeki modelleri modeller ve makul devamlılıklar üretir." data-en="Models patterns in sequences and generates plausible continuations.">Models patterns in sequences and generates plausible continuations.</dd></div>
+          <div><dt>Seq2seq</dt><dd data-tr="Bir diziyi diğerine dönüştürmek için kodlayıcı-kod çözücü yaklaşımı." data-en="An encoder–decoder approach to converting one sequence into another.">An encoder–decoder approach to converting one sequence into another.</dd></div>
+          <div><dt data-tr="Dikkat (Attention)" data-en="Attention">Attention</dt><dd data-tr="İlgili belirteç konumlarındaki bilgileri ağırlıklandırır." data-en="Weights information from relevant token positions.">Weights information from relevant token positions.</dd></div>
+          <div><dt>Transformer</dt><dd data-tr="Dikkat ve katmanlı temsiller üzerine kurulmuş bir sinirsel mimari." data-en="A neural architecture built around attention and layered representations.">A neural architecture built around attention and layered representations.</dd></div>
+          <div><dt>GPT</dt><dd data-tr="Transformer tabanlı üretken, önceden eğitilmiş bir model." data-en="A generative, pre-trained model based on a transformer.">A generative, pre-trained model based on a transformer.</dd></div>
+          <div><dt data-tr="İstem mühendisliği" data-en="Prompt engineering">Prompt engineering</dt><dd data-tr="Faydalı model davranışı için talimatlar, bağlam ve etkileşimler tasarlar." data-en="Designs instructions, context, and interactions for useful model behavior.">Designs instructions, context, and interactions for useful model behavior.</dd></div>
         </dl>
-        <h3>Five takeaways</h3>
+        <h3 data-tr="Beş çıkarım" data-en="Five takeaways">Five takeaways</h3>
         <ol class="takeaways">
-          <li>Modern language models grew out of a long history of sequence prediction.</li>
-          <li>Attention addresses the limits of compressing input into a single fixed representation.</li>
-          <li>Transformers made attention central to processing language.</li>
-          <li>GPT-style models generate text by repeatedly predicting the next token.</li>
-          <li>A useful prompt connects a user's goal to the kind of output the model should produce.</li>
+          <li data-tr="Modern dil modelleri uzun bir dizi tahmini geçmişinden doğmuştur." data-en="Modern language models grew out of a long history of sequence prediction.">Modern language models grew out of a long history of sequence prediction.</li>
+          <li data-tr="Dikkat, girdiyi tek bir sabit temsile sıkıştırma sınırlarını ele alır." data-en="Attention addresses the limits of compressing input into a single fixed representation.">Attention addresses the limits of compressing input into a single fixed representation.</li>
+          <li data-tr="Transformer'lar dikkati dil işlemenin merkezine koydu." data-en="Transformers made attention central to processing language.">Transformers made attention central to processing language.</li>
+          <li data-tr="GPT tarzı modeller, bir sonraki belirteci sürekli tahmin ederek metin üretir." data-en="GPT-style models generate text by repeatedly predicting the next token.">GPT-style models generate text by repeatedly predicting the next token.</li>
+          <li data-tr="Faydalı bir istem, kullanıcının amacını modelin üretmesi gereken çıktı türüne bağlar." data-en="A useful prompt connects a user's goal to the kind of output the model should produce.">A useful prompt connects a user's goal to the kind of output the model should produce.</li>
         </ol>
-        <h3>Check your understanding</h3>
-        <details><summary>Why was one “thought vector” problematic for a long input?</summary><p>It had to compress the whole input into one fixed-size representation, so names, qualifications, and other important details could be lost.</p></details>
-        <details><summary>What changes when the decoder can use attention?</summary><p>At each generation step, it can consult multiple source representations and give more weight to the parts relevant to the next token.</p></details>
-        <details><summary>What is missing from “Explain transformers”?</summary><p>It does not identify the audience, the scope and sequence, the output format, or useful constraints.</p></details>
+        <h3 data-tr="Anlayışınızı test edin" data-en="Check your understanding">Check your understanding</h3>
+        <details><summary data-tr="Neden uzun bir girdi için tek bir düşünce vektörü sorunluydu?" data-en="Why was one “thought vector” problematic for a long input?">Why was one “thought vector” problematic for a long input?</summary><p data-tr="Tüm girdiyi sabit boyutlu tek bir temsile sıkıştırmak zorundaydı, bu nedenle isimler, nitelikler ve diğer önemli detaylar kaybolabilirdi." data-en="It had to compress the whole input into one fixed-size representation, so names, qualifications, and other important details could be lost.">It had to compress the whole input into one fixed-size representation, so names, qualifications, and other important details could be lost.</p></details>
+        <details><summary data-tr="Kod çözücü dikkat kullandığında ne değişir?" data-en="What changes when the decoder can use attention?">What changes when the decoder can use attention?</summary><p data-tr="Her üretim adımında birden fazla kaynak temsiline danışabilir ve sonraki belirteçle ilgili kısımlara daha fazla ağırlık verebilir." data-en="At each generation step, it can consult multiple source representations and give more weight to the parts relevant to the next token.">At each generation step, it can consult multiple source representations and give more weight to the parts relevant to the next token.</p></details>
+        <details><summary data-tr="&quot;Transformer'ları açıkla&quot; ifadesinde ne eksiktir?" data-en="What is missing from “Explain transformers”?">What is missing from “Explain transformers”?</summary><p data-tr="Hedef kitleyi, kapsamı ve sırayı, çıktı formatını veya faydalı kısıtlamaları belirtmez." data-en="It does not identify the audience, the scope and sequence, the output format, or useful constraints.">It does not identify the audience, the scope and sequence, the output format, or useful constraints.</p></details>
       </section>
     </main>
   </div>
 
   <footer class="site-footer">
-    <div class="footer-inner"><span>promting · Chapter 01: Introduction to Prompt Engineering</span><a href="#top">Back to top ↑</a></div>
+    <div class="footer-inner"><span data-tr="promting · Bölüm 01: İstem Mühendisliğine Giriş" data-en="promting · Chapter 01: Introduction to Prompt Engineering">promting · Chapter 01: Introduction to Prompt Engineering</span><a href="#top" data-tr="Başa dön ↑" data-en="Back to top ↑">Back to top ↑</a></div>
   </footer>
   <script>
     const progress = document.getElementById('progress');
@@ -405,6 +410,38 @@ Define any technical term before using it.</pre></div>
     window.addEventListener('scroll', updateReadingState, { passive: true });
     window.addEventListener('resize', updateReadingState);
     updateReadingState();
+
+    let currentTheme = 'dark';
+    function toggleTheme() {
+      const html = document.documentElement;
+      const btn = document.getElementById('theme-btn');
+      if (currentTheme === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        btn.textContent = '🌙 Dark';
+        currentTheme = 'light';
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '☀️ Light';
+        currentTheme = 'dark';
+      }
+    }
+
+    let currentLang = 'en';
+    function toggleLang() {
+      const btn = document.getElementById('lang-btn');
+      currentLang = currentLang === 'en' ? 'tr' : 'en';
+      btn.textContent = currentLang === 'en' ? 'TR' : 'EN';
+      
+      document.querySelectorAll('[data-tr]').forEach(el => {
+        const trText = el.getAttribute('data-tr');
+        const enText = el.getAttribute('data-en');
+        if (currentLang === 'tr') {
+          el.textContent = trText;
+        } else {
+          el.textContent = enText;
+        }
+      });
+    }
   </script>
 </body>
 </html>
